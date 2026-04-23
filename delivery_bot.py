@@ -3,10 +3,20 @@ from sentence_transformers import SentenceTransformer, util
 import torch
 
 # --- 1. BRANDING & CONFIG ---
-st.set_page_config(page_title="Vayu", page_icon="🪽")
+st.set_page_config(page_title="Vayu", page_icon="🪽", layout="centered")
+
+# --- CUSTOM CSS TO HIDE STREAMLIT ELEMENTS ---
+hide_st_style = """
+            <style>
+            #MainMenu {visibility: hidden;}
+            footer {visibility: hidden;}
+            header {visibility: hidden;}
+            #stDecoration {display:none;}
+            </style>
+            """
+st.markdown(hide_st_style, unsafe_allow_value=True)
 
 # --- 2. FAQ DATA ---
-# Add your specific Wishmaster FAQs here
 FAQ_DATA = {
     "How do I mark a delivery as complete?": "Open the 'Active Orders' tab, select your current delivery, and tap 'Confirm Drop-off'.",
     "The customer is not answering the door.": "Wait for 2 minutes and call the customer twice. If there's no response, select 'Customer Unavailable' in the app.",
@@ -31,29 +41,23 @@ st.write("AI-powered assistant for instant delivery help")
 st.divider()
 
 # --- 5. CHAT SYSTEM ---
-# Initialize chat history
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-# Display chat history
 for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
-# User Input
 if prompt := st.chat_input("Ask Vayu a question..."):
-    # Add user message to history
     st.session_state.messages.append({"role": "user", "content": prompt})
     with st.chat_message("user"):
         st.markdown(prompt)
 
-    # Search Logic
     query_embedding = model.encode(prompt, convert_to_tensor=True)
     cos_scores = util.cos_sim(query_embedding, faq_embeddings)[0]
     best_match_idx = torch.argmax(cos_scores).item()
     top_score = cos_scores[best_match_idx].item()
 
-    # Generate Assistant Response
     with st.chat_message("assistant"):
         if top_score > 0.45:
             response = FAQ_DATA[faq_questions[best_match_idx]]
@@ -61,10 +65,7 @@ if prompt := st.chat_input("Ask Vayu a question..."):
         else:
             response = "I couldn't find a specific answer for that. Would you like to connect with a Fleet Supervisor?"
             st.warning(response)
-            if st.button("Connect to Support"):
-                st.info("Dialing support line: 1-800-VAYU-HELP")
             
-    # Add assistant response to history
     st.session_state.messages.append({"role": "assistant", "content": response})
 
 # --- SIDEBAR ---
