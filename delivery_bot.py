@@ -6,15 +6,17 @@ import torch
 st.set_page_config(page_title="Vayu", page_icon="🪽", layout="centered")
 
 # --- CUSTOM CSS TO HIDE STREAMLIT ELEMENTS ---
+# FIXED: changed unsafe_allow_value to unsafe_allow_html
 hide_st_style = """
             <style>
             #MainMenu {visibility: hidden;}
             footer {visibility: hidden;}
             header {visibility: hidden;}
+            .stDeployButton {display:none;}
             #stDecoration {display:none;}
             </style>
             """
-st.markdown(hide_st_style, unsafe_allow_value=True)
+st.markdown(hide_st_style, unsafe_allow_html=True)
 
 # --- 2. FAQ DATA ---
 FAQ_DATA = {
@@ -34,9 +36,9 @@ model = load_model()
 faq_questions = list(FAQ_DATA.keys())
 faq_embeddings = model.encode(faq_questions, convert_to_tensor=True)
 
-# --- 4. UI HEADERS (VAYU BRANDING) ---
+# --- 4. UI HEADERS ---
 st.title("Vayu")
-st.subheader("Giving wings to every Wishmaster.")
+st.subheader("Vayu: Giving wings to every Wishmaster.")
 st.write("AI-powered assistant for instant delivery help")
 st.divider()
 
@@ -61,7 +63,7 @@ if prompt := st.chat_input("Ask Vayu a question..."):
     with st.chat_message("assistant"):
         if top_score > 0.45:
             response = FAQ_DATA[faq_questions[best_match_idx]]
-            st.success(response)
+            st.info(response) # Changed to info (blue) for a cleaner look
         else:
             response = "I couldn't find a specific answer for that. Would you like to connect with a Fleet Supervisor?"
             st.warning(response)
@@ -71,7 +73,7 @@ if prompt := st.chat_input("Ask Vayu a question..."):
 # --- SIDEBAR ---
 with st.sidebar:
     st.title("🪽 Wishmaster Portal")
-    st.info("This AI is trained to help you fly through your deliveries.")
-    if st.button("Clear Chat"):
+    st.write("Logged in as: **Delivery Executive**")
+    if st.button("Clear Conversation"):
         st.session_state.messages = []
         st.rerun()
