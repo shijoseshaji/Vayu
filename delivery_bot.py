@@ -3,34 +3,50 @@ from sentence_transformers import SentenceTransformer, util
 import torch
 
 # --- 1. BRANDING & CONFIG ---
-# This sets the browser tab title
 st.set_page_config(page_title="Vayu", page_icon="🪽", layout="centered")
 
-# --- 2. UI CLEANUP (REMOVING STREAMLIT BRANDING) ---
-# This CSS hides the menu, footer, deploy button, and the 'Hosted by/Creator' badges
+# --- 2. AGGRESSIVE CSS FOR MOBILE & DESKTOP BRANDING REMOVAL ---
 hide_st_style = """
             <style>
+            /* 1. Hide the top header bar and deploy button */
+            header, [data-testid="stHeader"] {
+                visibility: hidden;
+                display: none;
+            }
+
+            /* 2. Hide the main hamburger menu (top right) */
             #MainMenu {visibility: hidden;}
-            footer {visibility: hidden;}
-            header {visibility: hidden;}
-            .stDeployButton {display:none;}
-            #stDecoration {display:none;}
-            
-            /* Hides the 'Hosted by' and 'Creator' status widgets */
-            div[data-testid="stStatusWidget"] {display: none !important;}
-            [data-testid="stViewerBadge"] {display: none !important;}
-            .viewerBadge_container__1QSob {display: none !important;}
-            
-            /* Professional spacing */
+
+            /* 3. Hide the footer (Made with Streamlit) */
+            footer {visibility: hidden; display: none !important;}
+
+            /* 4. Hide the floating 'Viewer Badge' (Creator icon) on mobile */
+            [data-testid="stViewerBadge"], .viewerBadge_container__1QSob, .st-emotion-cache-1647z6a {
+                display: none !important;
+                visibility: hidden !important;
+            }
+
+            /* 5. Hide the status widget (Hosted by Streamlit) */
+            div[data-testid="stStatusWidget"], [data-testid="stStatusWidget"] {
+                display: none !important;
+                visibility: hidden !important;
+            }
+
+            /* 6. Remove the annoying colored line at the top */
+            [data-testid="stDecoration"] {
+                display: none !important;
+            }
+
+            /* 7. Tighten up the top margin so 'Vayu' title starts higher on mobile screens */
             .block-container {
-                padding-top: 2rem;
-                padding-bottom: 2rem;
+                padding-top: 1.5rem !important;
+                padding-bottom: 1rem !important;
             }
             </style>
             """
 st.markdown(hide_st_style, unsafe_allow_html=True)
 
-# --- 3. FAQ DATA (WISHMASTER KNOWLEDGE BASE) ---
+# --- 3. FAQ DATA ---
 FAQ_DATA = {
     "How do I mark a delivery as complete?": "Open the 'Active Orders' tab, select your current delivery, and tap 'Confirm Drop-off'.",
     "The customer is not answering the door.": "Wait for 2 minutes and call the customer twice. If there's no response, select 'Customer Unavailable' in the app.",
@@ -44,7 +60,6 @@ FAQ_DATA = {
 # --- 4. LOAD AI BRAIN ---
 @st.cache_resource
 def load_model():
-    # MiniLM is fast and lightweight for mobile performance
     return SentenceTransformer('all-MiniLM-L6-v2')
 
 model = load_model()
@@ -61,43 +76,36 @@ st.divider()
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-# Display previous chat messages
 for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
 # --- 7. CHAT INPUT & AI LOGIC ---
 if prompt := st.chat_input("How can Vayu help you today?"):
-    # Add user message to history
     st.session_state.messages.append({"role": "user", "content": prompt})
     with st.chat_message("user"):
         st.markdown(prompt)
 
-    # Use Semantic Search to find best FAQ match
     query_embedding = model.encode(prompt, convert_to_tensor=True)
     cos_scores = util.cos_sim(query_embedding, faq_embeddings)[0]
     best_match_idx = torch.argmax(cos_scores).item()
     top_score = cos_scores[best_match_idx].item()
 
-    # Generate Response
     with st.chat_message("assistant"):
-        if top_score > 0.45:  # Confidence threshold
+        if top_score > 0.45:
             response = FAQ_DATA[faq_questions[best_match_idx]]
             st.info(response)
         else:
-            response = "I couldn't find a specific answer in the handbook. Would you like to connect with a Fleet Supervisor?"
+            response = "I couldn't find a specific answer. Connect with a Fleet Supervisor?"
             st.warning(response)
             if st.button("Contact Support"):
-                st.write("📞 Calling Supervisor: 1-800-VAYU-HELP")
+                st.write("📞 1-800-VAYU-HELP")
             
-    # Add assistant response to history
     st.session_state.messages.append({"role": "assistant", "content": response})
 
 # --- 8. SIDEBAR ---
 with st.sidebar:
     st.title("🪽 Wishmaster Portal")
-    st.write("This tool is designed to provide real-time support during your delivery run.")
-    st.divider()
     if st.button("Clear Conversation"):
         st.session_state.messages = []
         st.rerun()
