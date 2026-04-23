@@ -38,7 +38,7 @@ faq_embeddings = model.encode(faq_questions, convert_to_tensor=True)
 
 # --- 4. UI HEADERS ---
 st.title("Vayu")
-st.subheader("Vayu: Giving wings to every Wishmaster.")
+st.subheader("Giving wings to every Wishmaster.")
 st.write("AI-powered assistant for instant delivery help")
 st.divider()
 
