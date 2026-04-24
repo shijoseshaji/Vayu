@@ -54,7 +54,7 @@ FAQ_DATA = {
     "How are earnings calculated?": "Your earnings include base pay, distance incentives, and 100% of the tips provided by customers.",
     "What is the policy for damaged packages?": "Take a photo of the package before handing it over and report it under 'Damaged Item' in the support menu.",
     "How do I update my profile details?": "Go to the Settings tab in your main delivery app and select 'Profile Info'.",
-    "Where can I see my performance rating?": "Ratings are updated weekly under the 'Performance' tab in your Wishmaster Dashboard."
+    "Where can I see my performance rating?": "Ratings are updated weekly under the 'Performance' tab in your Wishmaster Dashboard.","How can I check if a shipment is eligible for OBD?":"Go to the runsheet in BYOD, search for the tracking ID or scan the QR code on the shipment, the tracking id page will show the shipment details, including OBD."
 }
 
 # --- 4. LOAD AI BRAIN ---
