@@ -35,7 +35,13 @@ text_model, vision_model = load_ai_brains()
 FAQ_DATA = {
     "Exchange Policy": "For mobile exchange, the device must power on and the IMEI must match the order.",
     "Scratch vs Crack": "A scratch is a surface mark you can't feel with a fingernail. A crack reflects light and is deep.",
-    "Liquid Damage": "Check the SIM tray for a pink/red indicator."
+    "Liquid Damage": "Check the SIM tray for a pink/red indicator.","How do I mark a delivery as complete?": "Open the 'Active Orders' tab, select your current delivery, and tap 'Confirm Drop-off'.",
+    "The customer is not answering the door.": "Wait for 2 minutes and call the customer twice. If there's no response, select 'Customer Unavailable' in the app.",
+    "What do I do in case of a vehicle breakdown?": "Safety first! Use the 'Emergency' button in the main menu to report the issue and pause your shift.",
+    "How are earnings calculated?": "Your earnings include base pay, distance incentives, and 100% of the tips provided by customers.",
+    "What is the policy for damaged packages?": "Take a photo of the package before handing it over and report it under 'Damaged Item' in the support menu.",
+    "How do I update my profile details?": "Go to the Settings tab in your main delivery app and select 'Profile Info'.",
+    "Where can I see my performance rating?": "Ratings are updated weekly under the 'Performance' tab in your Wishmaster Dashboard."
 }
 
 # --- 5. UI TABS ---
