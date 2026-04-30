@@ -1,5 +1,7 @@
 streamlit
 sentence-transformers
 torch
-torchvision
+requests
+opencv-python-headless
+numpy
 Pillow
